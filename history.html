@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Historique des cartes — WikiMasters Auto-Pulls</title>
+  <style>
+    body { margin: 0; padding: 20px; font: 14px system-ui, sans-serif; background: #0f1714; color: #d1fae5; }
+    h1 { font-size: 20px; margin: 0 0 6px; }
+    .sub { color: #a7f3d0; margin-bottom: 14px; }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+    input, select, button { background: #16211c; color: #d1fae5; border: 1px solid #1f2b25; border-radius: 8px; padding: 7px 10px; font: inherit; }
+    button { cursor: pointer; }
+    button.primary { background: #10b981; color: #052e22; border-color: #10b981; font-weight: 700; }
+    button.danger { border-color: #7f1d1d; color: #fca5a5; }
+    .rar-filter button { padding: 5px 9px; font-weight: 700; }
+    .rar-filter button.active { outline: 2px solid var(--r); color: var(--r); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+    .card { position: relative; background: #16211c; border: 2px solid var(--r); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .img { height: 110px; border-radius: 6px; overflow: hidden; background: #0b110e; }
+    .img img { width: 100%; height: 100%; object-fit: cover; }
+    .rar { position: absolute; top: 6px; left: 6px; background: var(--r); color: #052e22; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 6px; }
+    .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit; text-decoration: none; }
+    .name:hover { text-decoration: underline; }
+    .desc { color: #9ca3af; font-size: 11px; line-height: 1.3; max-height: 2.6em; overflow: hidden; }
+    .stats { display: flex; justify-content: space-between; font-size: 11px; color: #a7f3d0; font-weight: 600; }
+    .when { font-size: 10px; color: #6b7280; }
+    .empty { color: #6b7280; padding: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>Historique des cartes ouvertes</h1>
+  <div class="sub" id="summary">–</div>
+  <div class="bar">
+    <input id="search" type="search" placeholder="Rechercher par nom ou description…" style="flex:1;min-width:200px" />
+    <span class="rar-filter" id="rarities"></span>
+    <button id="exportJson">Exporter JSON</button>
+    <button id="exportCsv">Exporter CSV</button>
+    <button id="clear" class="danger">Vider l'historique</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Aucune carte enregistrée pour l'instant.</div>
+  <script src="history.js"></script>
+</body>
+</html>

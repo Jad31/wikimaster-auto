@@ -25,12 +25,25 @@ Elle n'appelle jamais l'API du site directement, ne clique jamais sur les bouton
 - Si le site affiche une vérification humaine, l'extension se fige, le titre de l'onglet clignote
   et une notification est envoyée : il faut valider manuellement, puis l'extension reprend seule.
 
+## Récap des cartes
+
+Chaque carte révélée est enregistrée localement (`chrome.storage.local`, 1000 dernières cartes) :
+rareté, nom, description, ATK / DEF, image et lien Wikipédia.
+
+- Si des paquets ont été ouverts pendant que l'onglet n'était pas visible, un panneau « Pendant ton
+  absence » s'affiche au retour sur l'onglet avec la liste des cartes, groupées par paquet. « Fermer »
+  marque ces cartes comme vues.
+- Le popup montre les 10 dernières cartes.
+- « Historique des cartes » ouvre une page complète : recherche, filtre par rareté, export JSON / CSV.
+
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
 | `manifest.json` | Déclaration MV3, content script limité à `/pulls` |
 | `content.js` | Machine à états : attente → ouverture → révélation → retour |
+| `cards.js` | Capture des cartes révélées, stockage, panneau de récap |
+| `history.html` / `history.js` | Page d'historique complet des cartes |
 | `background.js` | Badge et notifications |
 | `popup.html` / `popup.js` | Interrupteur ON/OFF, stats, journal |
 | `icons/` | Icônes |

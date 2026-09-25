@@ -15,8 +15,11 @@
     .phase.PAUSED_HUMAN { color: #f59e0b; }
     .phase.BACKOFF { color: #f87171; }
     .phase.OFF { color: #9ca3af; }
-    ul { list-style: none; padding: 0; margin: 0; max-height: 140px; overflow: auto; font-size: 11px; color: #a7f3d0; }
+    ul { list-style: none; padding: 0; margin: 0; max-height: 120px; overflow: auto; font-size: 11px; color: #a7f3d0; }
     li { padding: 2px 0; border-bottom: 1px solid #1f2b25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .section { color: #6ee7b7; font-weight: 600; margin: 8px 0 4px; }
+    .cards li { display: flex; gap: 6px; align-items: center; }
+    .cards .r { font-weight: 800; font-size: 10px; padding: 1px 5px; border-radius: 5px; color: #052e22; }
     .open { display: block; width: 100%; margin-top: 10px; padding: 6px; background: transparent; border: 1px solid #10b981; color: #d1fae5; border-radius: 6px; cursor: pointer; }
   </style>
 </head>
@@ -30,8 +33,12 @@
     <dt>Total</dt><dd id="total">0</dd>
     <dt>Dernier</dt><dd id="last">–</dd>
   </dl>
+  <div class="section">Dernières cartes</div>
+  <ul id="cards" class="cards"></ul>
+  <div class="section">Journal</div>
   <ul id="logs"></ul>
   <button id="openTab" class="open">Ouvrir /pulls</button>
+  <button id="openHistory" class="open">Historique des cartes</button>
   <script src="popup.js"></script>
 </body>
 </html>

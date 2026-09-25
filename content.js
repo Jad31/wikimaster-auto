@@ -152,6 +152,7 @@
     const deadline = Date.now() + REVEAL_TIMEOUT_MS;
     while (Date.now() < deadline) {
       if (!inReveal()) return true; // déjà revenu à l'écran initial
+      window.WMCards?.record(); // mémorise la carte affichée
       const next = findNextArrow();
       const cta = findCta();
       if (cta && !cta.disabled && text(cta).trim() === 'Continuer') {
@@ -190,7 +191,7 @@
     // Révélation déjà en cours (ex : ouverture manuelle ou rechargement en plein milieu)
     if (inReveal()) {
       state.busy = true;
-      try { await runReveal(); } finally { state.busy = false; state.phase = 'IDLE'; publish(); }
+      try { await runReveal(); window.WMCards?.finishPack(); } finally { state.busy = false; state.phase = 'IDLE'; publish(); }
       return;
     }
 
@@ -214,6 +215,9 @@
       if (!inReveal()) throw new Error("La révélation n'est pas apparue après le clic");
       const ok = await runReveal();
       if (!ok) throw new Error('Révélation non terminée avant le timeout');
+      window.WMCards?.finishPack().then((cards) => {
+        if (cards.length) log(`Cartes : ${cards.map((c) => `${c.rarity} ${c.name}`).join(', ')}`);
+      });
       state.sessionOpened += 1;
       state.backoffMs = BACKOFF_MIN_MS;
       state.lastError = null;
