@@ -20,7 +20,7 @@ function render() {
     b.addEventListener('click', () => { activeRarity = activeRarity === b.dataset.r ? null : b.dataset.r; render(); }));
   $('grid').innerHTML = list.map((c) => `
     <div class="card" style="--r:${RARITY_COLOR[c.rarity] || '#9ca3af'}">
-      <div class="img">${c.img ? `<img src="${esc(c.img)}" alt="" loading="lazy">` : ''}</div>
+      <div class="img">${c.img ? `<img src="${esc(c.img)}" alt="" loading="lazy">` : '<div class="noimg">WM</div>'}</div>
       <div class="rar">${esc(c.rarity)}</div>
       <a class="name" href="${esc(c.url || '#')}" target="_blank" rel="noopener" title="${esc(c.name)}">${esc(c.name)}</a>
       <div class="desc">${esc(c.desc)}</div>

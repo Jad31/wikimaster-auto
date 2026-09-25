@@ -20,18 +20,29 @@
     return m ? { idx: parseInt(m[1], 10), total: parseInt(m[2], 10) } : null;
   };
 
+  const NUM_RE = /^[\d\s\u202f\u00a0]+$/;
+  const isPlaceholderImg = (img) => !img.alt || img.alt.trim() === 'WikiMasters' || !/wikimedia\.org|wikipedia\.org/.test(img.currentSrc || img.src);
+
+  // La vue de révélation n'affiche qu'une carte à la fois : on part du badge de rareté
+  // (élément feuille dont le texte est C/PC/R/SR/UR/L) et on remonte jusqu'au conteneur
+  // qui contient aussi les deux valeurs ATK / DEF.
   const findCardContainer = () => {
     const root = main();
     if (!root) return null;
-    const img = [...root.querySelectorAll('img')].find((i) => i.alt && !i.closest('#wm-auto-overlay'));
-    let el = img;
-    for (let i = 0; i < 8 && el; i++) {
-      el = el.parentElement;
-      if (!el || el === root) break;
-      const lines = (el.innerText || '').split('\n').map((s) => s.trim()).filter(Boolean);
-      const hasRarity = lines.some((l) => RARITY_RE.test(l));
-      const nums = lines.filter((l) => /^[\d\s  ]+$/.test(l));
-      if (hasRarity && nums.length >= 2) return { el, img, lines };
+    const badges = [...root.querySelectorAll('div,span')].filter((e) =>
+      e.children.length === 0 && RARITY_RE.test((e.textContent || '').trim()) && e.offsetWidth > 0 && !e.closest('#wm-auto-overlay, #wm-auto-recap'));
+    for (const badge of badges) {
+      let el = badge;
+      for (let i = 0; i < 8 && el; i++) {
+        el = el.parentElement;
+        if (!el || el === root) break;
+        const lines = (el.innerText || '').split('\n').map((l) => l.trim()).filter(Boolean);
+        const nums = lines.filter((l) => NUM_RE.test(l));
+        if (nums.length >= 2 && lines.length >= 4) {
+          const img = [...el.querySelectorAll('img')].find((i) => !isPlaceholderImg(i)) || null;
+          return { el, img, lines, rarity: badge.textContent.trim() };
+        }
+      }
     }
     return null;
   };
@@ -40,15 +51,16 @@
     const pos = currentIndex();
     const c = findCardContainer();
     if (!pos || !c) return null;
-    const { img, lines } = c;
-    const rarity = lines.find((l) => RARITY_RE.test(l)) || '?';
-    const nums = lines.filter((l) => /^[\d\s  ]+$/.test(l)).map(toNum);
-    const name = img.alt.trim();
-    const nameIdx = lines.indexOf(name);
-    const desc = nameIdx >= 0 && lines[nameIdx + 1] && !RARITY_RE.test(lines[nameIdx + 1]) && !/^[\d\s  ]+$/.test(lines[nameIdx + 1])
-      ? lines[nameIdx + 1] : '';
+    const { img, lines, rarity } = c;
+    // Ordre constaté : rareté, nom, description (optionnelle), ATK, DEF
+    const rIdx = lines.findIndex((l) => RARITY_RE.test(l));
+    const textLines = lines.slice(rIdx + 1).filter((l) => !NUM_RE.test(l) && !RARITY_RE.test(l));
+    const name = (textLines[0] || img?.alt || '').trim();
+    const desc = (textLines[1] || '').trim();
+    if (!name) return null;
+    const nums = lines.filter((l) => NUM_RE.test(l)).map(toNum);
     const url = `https://fr.wikipedia.org/wiki/${encodeURIComponent(name.replace(/ /g, '_'))}`;
-    return { idx: pos.idx, total: pos.total, rarity, name, desc, url, img: cleanUrl(img.currentSrc || img.src), stats: nums.slice(0, 2) };
+    return { idx: pos.idx, total: pos.total, rarity, name, desc, url, img: img ? cleanUrl(img.currentSrc || img.src) : '', stats: nums.slice(0, 2) };
   };
 
   // ---- Stockage ----
@@ -123,7 +135,7 @@
               <div class="wm-grid">
                 ${list.map((c) => `
                   <div class="wm-card" style="--r:${RARITY_COLOR[c.rarity] || '#9ca3af'}">
-                    <div class="wm-img">${c.img ? `<img src="${esc(c.img)}" alt="">` : ''}</div>
+                    <div class="wm-img">${c.img ? `<img src="${esc(c.img)}" alt="">` : '<div class="wm-noimg">WM</div>'}</div>
                     <div class="wm-rar">${esc(c.rarity)}</div>
                     <a class="wm-name" href="${esc(c.url)}" target="_blank" rel="noopener" title="${esc(c.name)}">${esc(c.name)}</a>
                     <div class="wm-desc">${esc(c.desc)}</div>
@@ -148,6 +160,7 @@
       #wm-auto-recap .wm-card{position:relative;background:#16211c;border:2px solid var(--r);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px}
       #wm-auto-recap .wm-img{height:100px;border-radius:6px;overflow:hidden;background:#0b110e}
       #wm-auto-recap .wm-img img{width:100%;height:100%;object-fit:cover}
+      #wm-auto-recap .wm-noimg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:28px;color:var(--r);opacity:.5}
       #wm-auto-recap .wm-rar{position:absolute;top:6px;left:6px;background:var(--r);color:#052e22;font-weight:800;font-size:11px;padding:2px 6px;border-radius:6px}
       #wm-auto-recap .wm-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit;text-decoration:none}
       #wm-auto-recap .wm-name:hover{text-decoration:underline}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WikiMasters Auto-Pulls",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ouvre automatiquement les paquets disponibles sur wiki-masters.com/pulls tant que l'onglet est ouvert.",
   "permissions": ["storage", "notifications"],
   "host_permissions": ["https://www.wiki-masters.com/*"],
