@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "WikiMasters Auto-Pulls",
+  "version": "1.0.0",
+  "description": "Ouvre automatiquement les paquets disponibles sur wiki-masters.com/pulls tant que l'onglet est ouvert.",
+  "permissions": ["storage", "notifications"],
+  "host_permissions": ["https://www.wiki-masters.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.wiki-masters.com/pulls*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WikiMasters Auto-Pulls",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

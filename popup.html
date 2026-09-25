@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>WikiMasters Auto-Pulls</title>
+  <style>
+    body { width: 300px; margin: 0; padding: 12px; font: 13px system-ui, sans-serif; background: #0f1714; color: #d1fae5; }
+    h1 { font-size: 14px; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: center; }
+    .toggle { background: #10b981; color: #052e22; border: none; border-radius: 6px; padding: 5px 10px; font-weight: 600; cursor: pointer; }
+    .toggle.off { background: #6b7280; color: #fff; }
+    dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0 0 10px; }
+    dt { color: #6ee7b7; }
+    dd { margin: 0; }
+    .phase { font-weight: 600; }
+    .phase.PAUSED_HUMAN { color: #f59e0b; }
+    .phase.BACKOFF { color: #f87171; }
+    .phase.OFF { color: #9ca3af; }
+    ul { list-style: none; padding: 0; margin: 0; max-height: 140px; overflow: auto; font-size: 11px; color: #a7f3d0; }
+    li { padding: 2px 0; border-bottom: 1px solid #1f2b25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .open { display: block; width: 100%; margin-top: 10px; padding: 6px; background: transparent; border: 1px solid #10b981; color: #d1fae5; border-radius: 6px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Auto-Pulls <button id="toggle" class="toggle">…</button></h1>
+  <dl>
+    <dt>État</dt><dd id="phase" class="phase">–</dd>
+    <dt>Paquets dispo</dt><dd id="available">–</dd>
+    <dt>Prochain</dt><dd id="nextIn">–</dd>
+    <dt>Session</dt><dd id="session">0</dd>
+    <dt>Total</dt><dd id="total">0</dd>
+    <dt>Dernier</dt><dd id="last">–</dd>
+  </dl>
+  <ul id="logs"></ul>
+  <button id="openTab" class="open">Ouvrir /pulls</button>
+  <script src="popup.js"></script>
+</body>
+</html>
